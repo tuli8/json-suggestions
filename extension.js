@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-const fs = require('node:fs/promises');
+const fs = require('fs').promises;
 
 const RESULT_FILE_NAME = 'schemasAutocompleteTemplate.json';
 
@@ -90,8 +90,17 @@ function activate(context) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('jsonsuggestions is now active!');
+	
+	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 10);
+	statusBarItem.command =  'jsonsuggestions.buildContextFile';
 
-	const buildContextCommand = vscode.commands.registerCommand('jsonsuggestions.buildContextFile', () => {
+	context.subscriptions.push(statusBarItem);
+
+	statusBarItem.text = `jsonSuggestions`;
+    statusBarItem.tooltip = `build context file`;
+    statusBarItem.show();
+
+	const buildContextCommand = vscode.commands.registerCommand( 'jsonsuggestions.buildContextFile', () => {
 		vscode.window.showInputBox({title:'enter the path of the release schemas or idea projects directory'}).then(async(input) => {
 			if (input) {
 				//vscode.window.showInformationMessage(input);
